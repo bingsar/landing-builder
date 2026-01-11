@@ -33,6 +33,7 @@ services:
     env_file:
       - ./backend/.env
     environment:
+      APP_ENV: docker
       DB_HOST: mysql
       DB_PORT: 3306
       DB_DATABASE: builder
