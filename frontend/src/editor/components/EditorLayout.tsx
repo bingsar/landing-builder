@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type ComponentProps } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type ComponentProps } from 'react'
 import type { Block, PageDoc } from '../types'
 import { BlocksList } from '../BlocksList'
 import { BlockEditor } from '../BlockEditor'
@@ -35,11 +35,20 @@ export function EditorLayout({
   const [leftWidth, setLeftWidth] = useState(280)
   const [rightWidth, setRightWidth] = useState(360)
   const [dragging, setDragging] = useState<'left' | 'right' | null>(null)
+  const [previewSize, setPreviewSize] = useState<{ width: number; height: number } | null>(null)
   const layoutRef = useRef<HTMLDivElement>(null)
+  const previewRef = useRef<HTMLElement>(null)
   const handleWidth = 6
   const minLeft = 260
   const minRight = 280
   const minCenter = 420
+
+  const updatePreviewSize = useCallback(() => {
+    const preview = previewRef.current
+    if (!preview) return
+    const rect = preview.getBoundingClientRect()
+    setPreviewSize({ width: Math.round(rect.width), height: Math.round(rect.height) })
+  }, [])
 
   const selectedBlock = useMemo(
     () => doc.blocks.find((b) => b.id === selectedId) ?? null,
@@ -81,6 +90,14 @@ export function EditorLayout({
       window.removeEventListener('pointerup', stopDrag)
     }
   }, [dragging, leftWidth, rightWidth])
+
+  useEffect(() => {
+    if (!dragging) {
+      setPreviewSize(null)
+      return
+    }
+    updatePreviewSize()
+  }, [dragging, leftWidth, rightWidth, updatePreviewSize])
 
   useEffect(() => {
     if (!dragging) return
@@ -130,11 +147,17 @@ export function EditorLayout({
             className="bg-border/60 hover:bg-border cursor-col-resize"
           />
 
-          <main className="bg-muted/30 overflow-auto">
+          <main ref={previewRef} className="bg-muted/30 overflow-auto relative">
+            {dragging && previewSize ? (
+              <div className="absolute top-3 right-3 bg-background/90 text-foreground text-xs px-2 py-1 rounded border shadow-sm pointer-events-none">
+                {previewSize.width} × {previewSize.height}
+              </div>
+            ) : null}
+
             <div className="max-w-3xl mx-auto p-6 space-y-6">
               {doc.blocks.length === 0 ? (
                 <div className="text-sm text-muted-foreground border rounded-xl p-6 bg-background">
-                  Добавь блок слева, чтобы начать
+                  Добавьте блок слева, чтобы начать
                 </div>
               ) : null}
 

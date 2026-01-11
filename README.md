@@ -2,7 +2,7 @@
 
 Конструктор лендингов с редактором на React и API на Laravel.
 
-## Быстрый старт (Docker)
+## Docker
 
 ```sh
 docker compose up
@@ -14,14 +14,16 @@ docker compose up
 - Swagger UI: `http://localhost:8000/api/documentation`
 
 ## Локальная разработка
+### Отдельно запускаем фронтенд и бэкенд
 
-Backend (Laravel):
+Backend:
 ```sh
+cd backend
 php artisan migrate --env=local
 php artisan serve --env=local
 ```
 
-Frontend (Vite):
+Frontend:
 ```sh
 cd frontend
 yarn
@@ -45,13 +47,13 @@ Frontend (`frontend/`):
 - Vite
 - RTK Query
 
-## Как добавить новый тип блока (пример: Testimonials)
+## Как добавить новый тип блока на примере Testimonials
 
 1. **Типы**
    - Добавить типы данных для блока `frontend/src/editor/types.ts`.
 
 2. **Дефолтные данные**
-   - Дефолтные данные для блока в `frontend/src/editor/blocks/createBlock.ts`.
+   - Добавить дефолтные данные для блока в `frontend/src/editor/blocks/createBlock.ts`.
 
 3. **Рендер блока**
    - Добавить UI‑рендер в `frontend/src/editor/blocks/testimonials/TestimonialsBlock.tsx`.
