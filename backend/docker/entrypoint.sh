@@ -1,6 +1,12 @@
 #!/usr/bin/env sh
 set -e
 
+if [ ! -f /var/www/html/vendor/autoload.php ]; then
+  echo "Installing composer dependencies..."
+  COMPOSER_ALLOW_SUPERUSER=1 composer install --no-interaction --prefer-dist --no-dev --optimize-autoloader
+  php artisan package:discover --ansi
+fi
+
 if [ -n "${DB_HOST:-}" ]; then
   echo "Waiting for MySQL at ${DB_HOST}:${DB_PORT:-3306}..."
   until mariadb-admin --ssl=FALSE ping -h"${DB_HOST}" -P"${DB_PORT:-3306}" -u"${DB_USERNAME:-root}" -p"${DB_PASSWORD:-}" --silent; do
