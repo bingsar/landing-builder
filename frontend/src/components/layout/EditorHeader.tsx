@@ -174,7 +174,7 @@ export function EditorHeader({
                 if (event.key === 'Escape') cancel()
               }}
               autoFocus
-              className="h-7 px-2 text-sm w-64"
+              className="h-7 px-2 text-sm w-64 w-fit"
               placeholder="untitled_page"
             />
           ) : (
